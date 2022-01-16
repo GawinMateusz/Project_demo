@@ -1,21 +1,18 @@
-package com.sda.diary;
+package com.sda.diary.entry;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-public class EntryRepository {
+public class EntryRepositoryImpl implements EntryRepository{
 
     private final SessionFactory sessionFactory;
 
-
+    @Override
     public List<Entry> findAll() {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
@@ -25,6 +22,7 @@ public class EntryRepository {
         return entries;
     }
 
+    @Override
     public Entry save(Entry entry) {
         Session session = sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();

@@ -1,7 +1,8 @@
-package com.sda.diary;
+package com.sda.diary.entry;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.Session;
+import com.sda.diary.frontend.UserInterface;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -19,18 +20,14 @@ public class Application {
                 .buildSessionFactory();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        EntryRepository entryRepository = new EntryRepository(sessionFactory);
-        EntryService entryService = new EntryService(entryRepository);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        EntryRepositoryImpl entryRepositoryImpl = new EntryRepositoryImpl(sessionFactory);
+        EntryService entryService = new EntryService(entryRepositoryImpl, objectMapper);
         EntryController entryController = new EntryController(entryService, objectMapper);
+        //symulacja interfejsu
 
-        String title = "title-1";
-        String content = "content-1";
-        String data = String.format("{\"title\": \"%s\", \"content\": \"%s\"}", title, content);
+        UserInterface userInterface = new UserInterface(entryController);
+        userInterface.run();
 
-        String respose = entryController.createEntry(data);
-        System.out.println(respose);
-
-        String responseTwo = entryController.getAllEntries();
-        System.out.println(responseTwo);
     }
 }
